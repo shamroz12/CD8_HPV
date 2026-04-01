@@ -713,13 +713,15 @@ def extract_features(seq):
 
     seq = str(seq)
 
+    # accept only trained lengths
     if len(seq) not in [8, 9, 10]:
         return None
 
+    # pad to length 10
     if len(seq) < 10:
         seq = seq + "X"*(10-len(seq))
 
-    # ===== ENCODING =====
+    # ===== POSITIONAL ENCODING =====
     aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
     aa_index = {aa:i for i,aa in enumerate(aa_list)}
 
@@ -730,12 +732,13 @@ def extract_features(seq):
         if aa in aa_index:
             pos_encoding[i, aa_index[aa]] = 1
 
-    return pos_encoding.flatten()
-    
-    # ✅ Dipeptide
-    di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
-    di_features = np.array([di_count[dp]/8 for dp in dipeptides])
+    pos_encoding = pos_encoding.flatten()
 
+    # ===== DIPEPTIDE FEATURES =====
+    di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
+    di_features = np.array([di_count.get(dp, 0)/8 for dp in dipeptides])
+
+    # ===== BIO FEATURES =====
     length = len(seq)
     aa_count = Counter(seq)
 
@@ -745,35 +748,20 @@ def extract_features(seq):
     neg_frac = sum(a in negative for a in seq)/length
     net_charge = pos_frac - neg_frac
 
-    entropy = -sum((aa_count[a]/length)*math.log2(aa_count[a]/length)
-                   for a in aa_count)
+    entropy = -sum(
+        (aa_count[a]/length)*math.log2(aa_count[a]/length)
+        for a in aa_count
+    )
 
     avg_weight = sum(aa_weight.get(a,0) for a in seq)/length
 
+    # ===== FINAL FEATURE VECTOR =====
     return np.concatenate([
         pos_encoding,
         di_features,
         [hydro_frac, arom_frac, pos_frac, neg_frac,
          net_charge, entropy, avg_weight]
     ])
-
-    di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
-    di_features = np.array([di_count[dp]/8 for dp in dipeptides])
-
-    length = len(seq)
-    aa_count = Counter(seq)
-
-    hydro_frac = sum(a in hydrophobic for a in seq)/length
-    arom_frac = sum(a in aromatic for a in seq)/length
-    pos_frac = sum(a in positive for a in seq)/length
-    neg_frac = sum(a in negative for a in seq)/length
-    net_charge = pos_frac - neg_frac
-    entropy = -sum((aa_count[a]/length)*math.log2(aa_count[a]/length)
-                   for a in aa_count)
-    avg_weight = sum(aa_weight[a] for a in seq)/length
-
-    return np.concatenate([pos_encoding, di_features,
-        [hydro_frac,arom_frac,pos_frac,neg_frac,net_charge,entropy,avg_weight]])
 
 st.markdown("""
 <style>
