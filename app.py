@@ -713,18 +713,6 @@ def extract_features(seq):
 
     seq = str(seq)
 
-    # ❌ Reject invalid lengths
-    if len(seq) not in [8, 9, 10]:
-        return None
-
-    # ===== FIX TO 10 LENGTH (MAX TRAINED SIZE) =====
-    if len(seq) < 10:
-        seq = seq + "X"*(10-len(seq))
-
-    def extract_features(seq):
-
-    seq = str(seq)
-
     if len(seq) not in [8, 9, 10]:
         return None
 
