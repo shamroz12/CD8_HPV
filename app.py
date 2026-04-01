@@ -804,7 +804,7 @@ with tab1:
             if not l.startswith(">")
         ]).upper()
 
-       def generate_peptides(seq):
+    def generate_peptides(seq):
         peptides = []
         positions = []
 
