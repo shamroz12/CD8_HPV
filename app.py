@@ -674,7 +674,7 @@ drawNetwork();
 # =========================================================
 @st.cache_resource
 def load_model():
-    return joblib.load("hpv_cd8_model.pkl")
+    return joblib.load("hpv_cd8_model.pkl")   # ✅ FIXED
 model = load_model()
 threshold = 0.261
 
