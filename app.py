@@ -732,7 +732,7 @@ def extract_features(seq):
         if aa in aa_index:
             pos_encoding[i, aa_index[aa]] = 1
 
-   def extract_features(seq):
+    def extract_features(seq):
 
     seq = str(seq)
 
