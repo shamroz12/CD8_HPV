@@ -690,24 +690,14 @@ drawNetwork();
 # =========================================================
 @st.cache_resource
 def load_model():
-    return joblib.load("hpv_cd8_model.pkl")   # ✅ FIXED
+    return joblib.load("hpv_cd8_model.pkl")
+
 model = load_model()
 threshold = 0.261
 
-aa_list = list("ACDEFGHIKLMNPQRSTVWY")
+# ===== AA LIST (WITH X — IMPORTANT) =====
+aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
 aa_index = {aa:i for i,aa in enumerate(aa_list)}
-dipeptides = ["".join(p) for p in product(aa_list, repeat=2)]
-
-hydrophobic = set("AILMFWYV")
-aromatic = set("FWY")
-positive = set("KRH")
-negative = set("DE")
-
-aa_weight = {
-"A":89,"C":121,"D":133,"E":147,"F":165,"G":75,"H":155,
-"I":131,"K":146,"L":131,"M":149,"N":132,"P":115,
-"Q":146,"R":174,"S":105,"T":119,"V":117,"W":204,"Y":181
-}
 
 def extract_features(seq):
 
@@ -716,10 +706,11 @@ def extract_features(seq):
     if len(seq) not in [8, 9, 10]:
         return None
 
+    # pad to 10 using X (important)
     if len(seq) < 10:
         seq = seq + "X"*(10-len(seq))
 
-    # ===== POSITION =====
+    # ===== POSITION (WITH X → 21 AA) =====
     aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
     aa_index = {aa:i for i,aa in enumerate(aa_list)}
 
@@ -730,31 +721,19 @@ def extract_features(seq):
         if aa in aa_index:
             pos[i, aa_index[aa]] = 1
 
-    pos = pos.flatten()   # 210
+    pos = pos.flatten()   # 210 features
 
-    # ===== DIPEPTIDE (MUST BE 400) =====
-    di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
-    di = np.array([di_count.get(dp, 0)/8 for dp in dipeptides])  # 400
-
-    # ===== BIO FEATURES (7) =====
-    length = len(seq)
+    # ===== AA COMPOSITION (21 features) =====
     aa_count = Counter(seq)
+    length = len(seq)
 
-    hydro = sum(a in hydrophobic for a in seq)/length
-    arom = sum(a in aromatic for a in seq)/length
-    pos_c = sum(a in positive for a in seq)/length
-    neg_c = sum(a in negative for a in seq)/length
-    net = pos_c - neg_c
+    comp = np.array([
+        aa_count.get(aa, 0)/length for aa in aa_list
+    ])  # 21 features
 
-    entropy = -sum((aa_count[a]/length)*math.log2(aa_count[a]/length)
-                   for a in aa_count)
-
-    weight = sum(aa_weight.get(a,0) for a in seq)/length
-
-    bio = np.array([hydro, arom, pos_c, neg_c, net, entropy, weight])
-
-    return np.concatenate([pos, di, bio])   # ✅ 617 features
-
+    # ===== FINAL =====
+    return np.concatenate([pos, comp])   # 🔥 210 + 21 = 231
+    
 st.markdown("""
 <style>
 
