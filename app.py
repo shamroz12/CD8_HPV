@@ -713,55 +713,47 @@ def extract_features(seq):
 
     seq = str(seq)
 
-    # accept only trained lengths
     if len(seq) not in [8, 9, 10]:
         return None
 
-    # pad to length 10
     if len(seq) < 10:
         seq = seq + "X"*(10-len(seq))
 
-    # ===== POSITIONAL ENCODING =====
+    # ===== POSITION =====
     aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
     aa_index = {aa:i for i,aa in enumerate(aa_list)}
 
-    pos_encoding = np.zeros((10, len(aa_list)))
+    pos = np.zeros((10, len(aa_list)))
 
     for i in range(10):
         aa = seq[i]
         if aa in aa_index:
-            pos_encoding[i, aa_index[aa]] = 1
+            pos[i, aa_index[aa]] = 1
 
-    pos_encoding = pos_encoding.flatten()
+    pos = pos.flatten()   # 210
 
-    # ===== DIPEPTIDE FEATURES =====
+    # ===== DIPEPTIDE (MUST BE 400) =====
     di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
-    di_features = np.array([di_count.get(dp, 0)/8 for dp in dipeptides])
+    di = np.array([di_count.get(dp, 0)/8 for dp in dipeptides])  # 400
 
-    # ===== BIO FEATURES =====
+    # ===== BIO FEATURES (7) =====
     length = len(seq)
     aa_count = Counter(seq)
 
-    hydro_frac = sum(a in hydrophobic for a in seq)/length
-    arom_frac = sum(a in aromatic for a in seq)/length
-    pos_frac = sum(a in positive for a in seq)/length
-    neg_frac = sum(a in negative for a in seq)/length
-    net_charge = pos_frac - neg_frac
+    hydro = sum(a in hydrophobic for a in seq)/length
+    arom = sum(a in aromatic for a in seq)/length
+    pos_c = sum(a in positive for a in seq)/length
+    neg_c = sum(a in negative for a in seq)/length
+    net = pos_c - neg_c
 
-    entropy = -sum(
-        (aa_count[a]/length)*math.log2(aa_count[a]/length)
-        for a in aa_count
-    )
+    entropy = -sum((aa_count[a]/length)*math.log2(aa_count[a]/length)
+                   for a in aa_count)
 
-    avg_weight = sum(aa_weight.get(a,0) for a in seq)/length
+    weight = sum(aa_weight.get(a,0) for a in seq)/length
 
-    # ===== FINAL FEATURE VECTOR =====
-    return np.concatenate([
-        pos_encoding,
-        di_features,
-        [hydro_frac, arom_frac, pos_frac, neg_frac,
-         net_charge, entropy, avg_weight]
-    ])
+    bio = np.array([hydro, arom, pos_c, neg_c, net, entropy, weight])
+
+    return np.concatenate([pos, di, bio])   # ✅ 617 features
 
 st.markdown("""
 <style>
