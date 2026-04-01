@@ -711,18 +711,23 @@ aa_weight = {
 
 def extract_features(seq):
 
-    # ========= FIX LENGTH =========
-    seq = str(seq)[:11]
-    if len(seq) < 11:
-        seq = seq + "X"*(11-len(seq))
+    seq = str(seq)
 
-    # ========= POSITION ENCODING =========
+    # ❌ Reject invalid lengths
+    if len(seq) not in [8, 9, 10]:
+        return None
+
+    # ===== FIX TO 10 LENGTH (MAX TRAINED SIZE) =====
+    if len(seq) < 10:
+        seq = seq + "X"*(10-len(seq))
+
+    # ===== ENCODING =====
     aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
     aa_index = {aa:i for i,aa in enumerate(aa_list)}
 
-    pos_encoding = np.zeros((11, len(aa_list)))
+    pos_encoding = np.zeros((10, len(aa_list)))
 
-    for i in range(11):
+    for i in range(10):
         aa = seq[i]
         if aa in aa_index:
             pos_encoding[i, aa_index[aa]] = 1
@@ -835,9 +840,22 @@ if run_scan and fasta:
 
         peptides, positions = generate_peptides(seq)
               
-        X = np.array([extract_features(p) for p in peptides])
-        probs = model.predict_proba(X)[:,1]
+               valid_peptides = []
+        valid_positions = []
+        features = []
 
+        for p, pos in zip(peptides, positions):
+
+            f = extract_features(p)
+
+            if f is not None:
+                valid_peptides.append(p)
+                valid_positions.append(pos)
+                features.append(f)
+
+        X = np.array(features)
+        probs = model.predict_proba(X)[:,1]
+      
         results = []
         for pos, pep, prob in zip(positions, peptides, probs):
             cat = "Epitope" if prob >= threshold else "Non-Epitope"
