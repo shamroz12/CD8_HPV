@@ -1539,26 +1539,17 @@ if run_scan and fasta:
 # FEATURE NAMES FOR EXPLAINABILITY
 # ==========================
 
+# Position features (10 × 21 = 210)
 pos_features = []
-
-for pos in range(1,10):
+for pos in range(1, 11):
     for aa in aa_list:
-        pos_features.append(f"Position{pos}_{aa}")
+        pos_features.append(f"Pos{pos}_{aa}")
 
-di_features = [f"Dipeptide_{dp}" for dp in dipeptides]
+# Composition features (21)
+comp_features = [f"Comp_{aa}" for aa in aa_list]
 
-bio_features = [
-    "Hydrophobicity",
-    "Aromaticity",
-    "Positive_Charge",
-    "Negative_Charge",
-    "Net_Charge",
-    "Entropy",
-    "Avg_Molecular_Weight"
-]
-
-feature_names = pos_features + di_features + bio_features
-
+# Final feature names
+feature_names = pos_features + comp_features
 
 with tab2:
 
