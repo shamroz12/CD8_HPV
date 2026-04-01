@@ -796,15 +796,16 @@ with tab1:
     # BUTTON MUST BE INSIDE TAB
     run_scan = st.button("Run AI Scan")
 
-    if run_scan and fasta:
+if run_scan and fasta:
 
-        # SEQUENCE CLEANING
         seq = "".join([
-            l.strip() for l in fasta.split("\n")
-            if not l.startswith(">")
+                l.strip() for l in fasta.split("\n")
+                if not l.startswith(">")
         ]).upper()
 
-    def generate_peptides(seq):
+        peptides, positions = generate_peptides(seq)
+    
+   def generate_peptides(seq):
         peptides = []
         positions = []
 
