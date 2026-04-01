@@ -674,7 +674,7 @@ drawNetwork();
 # =========================================================
 @st.cache_resource
 def load_model():
-    return joblib.load("hpv_epitope_model.pkl")
+    return joblib.load("hpv_cd8_model.pkl")
 model = load_model()
 threshold = 0.261
 
@@ -807,8 +807,11 @@ with tab1:
         peptides = []
         positions = []
 
-        for i in range(len(seq)-8):
-            peptides.append(seq[i:i+9])
+       lengths = [8, 9, 10]
+
+       for L in lengths:
+       for i in range(len(seq) - L + 1):
+        peptides.append(seq[i:i+L])
             positions.append(i+1)
 
         X = np.array([extract_features(p) for p in peptides])
