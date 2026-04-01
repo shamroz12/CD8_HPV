@@ -850,7 +850,8 @@ if run_scan and fasta:
 
         st.session_state["df"] = df
 
-       
+       df["Length"] = df["Peptide"].apply(len)
+
         # ==========================
         # SPLIT TABLES
         # ==========================
@@ -920,10 +921,10 @@ if run_scan and fasta:
                         epi_show["Probability"] = epi_show["Probability"].round(3)
 
                         st.dataframe(
-                                epi_show,
-                                use_container_width=True,
-                                hide_index=True,
-                                height=350
+                                 epi_show[["Position","Peptide","Length","Probability","Category"]],
+                                 use_container_width=True,
+                                 hide_index=True,
+                                 height=350
                         )
 
                 else:
@@ -939,7 +940,7 @@ if run_scan and fasta:
                         non_show["Probability"] = non_show["Probability"].round(3)
 
                         st.dataframe(
-                                non_show,
+                                non_show[["Position","Peptide","Length","Probability","Category"]],
                                 use_container_width=True,
                                 height=350,
                                 hide_index=True
