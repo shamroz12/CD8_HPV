@@ -2,7 +2,7 @@ def generate_peptides(seq):
     peptides = []
     positions = []
 
-    lengths = [8, 9, 10, 11]   # ✅ updated
+    lengths = [8, 9, 10]   # ✅ updated
 
     # CLEAN sequence (VERY IMPORTANT)
     seq = "".join([a for a in seq.upper() if a in "ACDEFGHIKLMNPQRSTVWY"])
@@ -732,7 +732,52 @@ def extract_features(seq):
         if aa in aa_index:
             pos_encoding[i, aa_index[aa]] = 1
 
-    return pos_encoding.flatten()
+   def extract_features(seq):
+
+    seq = str(seq)
+
+    if len(seq) not in [8, 9, 10]:
+        return None
+
+    if len(seq) < 10:
+        seq = seq + "X"*(10-len(seq))
+
+    aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
+    aa_index = {aa:i for i,aa in enumerate(aa_list)}
+
+    pos_encoding = np.zeros((10, len(aa_list))
+
+    for i in range(10):
+        aa = seq[i]
+        if aa in aa_index:
+            pos_encoding[i, aa_index[aa]] = 1
+
+    pos_encoding = pos_encoding.flatten()
+
+    # ✅ Dipeptide
+    di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
+    di_features = np.array([di_count[dp]/8 for dp in dipeptides])
+
+    length = len(seq)
+    aa_count = Counter(seq)
+
+    hydro_frac = sum(a in hydrophobic for a in seq)/length
+    arom_frac = sum(a in aromatic for a in seq)/length
+    pos_frac = sum(a in positive for a in seq)/length
+    neg_frac = sum(a in negative for a in seq)/length
+    net_charge = pos_frac - neg_frac
+
+    entropy = -sum((aa_count[a]/length)*math.log2(aa_count[a]/length)
+                   for a in aa_count)
+
+    avg_weight = sum(aa_weight.get(a,0) for a in seq)/length
+
+    return np.concatenate([
+        pos_encoding,
+        di_features,
+        [hydro_frac, arom_frac, pos_frac, neg_frac,
+         net_charge, entropy, avg_weight]
+    ])
 
     di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
     di_features = np.array([di_count[dp]/8 for dp in dipeptides])
