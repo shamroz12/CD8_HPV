@@ -804,16 +804,19 @@ with tab1:
             if not l.startswith(">")
         ]).upper()
 
+       def generate_peptides(seq):
         peptides = []
         positions = []
 
         lengths = [8, 9, 10]
 
         for L in lengths:
-        for i in range(len(seq) - L + 1):
-                peptides.append(seq[i:i+L])
-                positions.append(i + 1)
+                for i in range(len(seq) - L + 1):
+                        peptides.append(seq[i:i+L])
+                        positions.append(i + 1)
 
+        return peptides, positions
+           
         X = np.array([extract_features(p) for p in peptides])
         probs = model.predict_proba(X)[:,1]
 
