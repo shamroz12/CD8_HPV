@@ -805,7 +805,7 @@ if run_scan and fasta:
 
         peptides, positions = generate_peptides(seq)
     
-   def generate_peptides(seq):
+def generate_peptides(seq):
         peptides = []
         positions = []
 
