@@ -721,6 +721,16 @@ def extract_features(seq):
     if len(seq) < 10:
         seq = seq + "X"*(10-len(seq))
 
+    def extract_features(seq):
+
+    seq = str(seq)
+
+    if len(seq) not in [8, 9, 10]:
+        return None
+
+    if len(seq) < 10:
+        seq = seq + "X"*(10-len(seq))
+
     # ===== ENCODING =====
     aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
     aa_index = {aa:i for i,aa in enumerate(aa_list)}
@@ -732,28 +742,8 @@ def extract_features(seq):
         if aa in aa_index:
             pos_encoding[i, aa_index[aa]] = 1
 
-    def extract_features(seq):
-
-    seq = str(seq)
-
-    if len(seq) not in [8, 9, 10]:
-        return None
-
-    if len(seq) < 10:
-        seq = seq + "X"*(10-len(seq))
-
-    aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
-    aa_index = {aa:i for i,aa in enumerate(aa_list)}
-
-    pos_encoding = np.zeros((10, len(aa_list))
-
-    for i in range(10):
-        aa = seq[i]
-        if aa in aa_index:
-            pos_encoding[i, aa_index[aa]] = 1
-
-    pos_encoding = pos_encoding.flatten()
-
+    return pos_encoding.flatten()
+    
     # ✅ Dipeptide
     di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
     di_features = np.array([di_count[dp]/8 for dp in dipeptides])
