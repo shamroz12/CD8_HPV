@@ -1551,7 +1551,7 @@ with tab2:
         # FIX: match lengths safely
         min_len = min(len(feature_names), len(importance))
 
-         imp_df = pd.DataFrame({
+imp_df = pd.DataFrame({
         "Feature": feature_names[:min_len],
         "Importance": importance[:min_len]
          }).sort_values(by="Importance", ascending=False).head(20)
