@@ -1548,10 +1548,13 @@ with tab2:
 
         importance = model.feature_importances_
 
-        imp_df = pd.DataFrame({
-                "Feature": feature_names,
-                "Importance": importance
-        }).sort_values(by="Importance", ascending=False).head(20)
+        # FIX: match lengths safely
+        min_len = min(len(feature_names), len(importance))
+
+         imp_df = pd.DataFrame({
+        "Feature": feature_names[:min_len],
+        "Importance": importance[:min_len]
+         }).sort_values(by="Importance", ascending=False).head(20)
 
         fig = px.bar(
                 imp_df,
