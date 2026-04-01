@@ -1,15 +1,18 @@
 def generate_peptides(seq):
-        peptides = []
-        positions = []
+    peptides = []
+    positions = []
 
-        lengths = [8, 9, 10]
+    lengths = [8, 9, 10, 11]   # ✅ updated
 
-        for L in lengths:
-                for i in range(len(seq) - L + 1):
-                        peptides.append(seq[i:i+L])
-                        positions.append(i + 1)
+    # CLEAN sequence (VERY IMPORTANT)
+    seq = "".join([a for a in seq.upper() if a in "ACDEFGHIKLMNPQRSTVWY"])
 
-        return peptides, positions
+    for L in lengths:
+        for i in range(len(seq) - L + 1):
+            peptides.append(seq[i:i+L])
+            positions.append(i + 1)
+
+    return peptides, positions
     
 import streamlit as st
 st.set_page_config(page_title="HPV EPIPRED", page_icon="🧬", layout="wide")
@@ -707,10 +710,24 @@ aa_weight = {
 }
 
 def extract_features(seq):
-    pos_encoding = np.zeros((9,20))
-    for pos, aa in enumerate(seq):
-        pos_encoding[pos, aa_index[aa]] = 1
-    pos_encoding = pos_encoding.flatten()
+
+    # ========= FIX LENGTH =========
+    seq = str(seq)[:11]
+    if len(seq) < 11:
+        seq = seq + "X"*(11-len(seq))
+
+    # ========= POSITION ENCODING =========
+    aa_list = list("ACDEFGHIKLMNPQRSTVWYX")
+    aa_index = {aa:i for i,aa in enumerate(aa_list)}
+
+    pos_encoding = np.zeros((11, len(aa_list)))
+
+    for i in range(11):
+        aa = seq[i]
+        if aa in aa_index:
+            pos_encoding[i, aa_index[aa]] = 1
+
+    return pos_encoding.flatten()
 
     di_count = Counter([seq[i:i+2] for i in range(len(seq)-1)])
     di_features = np.array([di_count[dp]/8 for dp in dipeptides])
