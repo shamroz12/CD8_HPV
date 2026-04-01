@@ -808,9 +808,9 @@ with tab1:
         positions = []
 
     lengths = [8, 9, 10]
-
-       for L in lengths:
-       for i in range(len(seq) - L + 1):
+    
+    for L in lengths:
+    for i in range(len(seq) - L + 1):
         peptides.append(seq[i:i+L])
             positions.append(i+1)
 
