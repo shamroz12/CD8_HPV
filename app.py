@@ -1,3 +1,16 @@
+def generate_peptides(seq):
+        peptides = []
+        positions = []
+
+        lengths = [8, 9, 10]
+
+        for L in lengths:
+                for i in range(len(seq) - L + 1):
+                        peptides.append(seq[i:i+L])
+                        positions.append(i + 1)
+
+        return peptides, positions
+    
 import streamlit as st
 st.set_page_config(page_title="HPV EPIPRED", page_icon="🧬", layout="wide")
 
@@ -804,20 +817,7 @@ if run_scan and fasta:
         ]).upper()
 
         peptides, positions = generate_peptides(seq)
-    
-def generate_peptides(seq):
-        peptides = []
-        positions = []
-
-        lengths = [8, 9, 10]
-
-        for L in lengths:
-                for i in range(len(seq) - L + 1):
-                        peptides.append(seq[i:i+L])
-                        positions.append(i + 1)
-
-        return peptides, positions
-           
+              
         X = np.array([extract_features(p) for p in peptides])
         probs = model.predict_proba(X)[:,1]
 
