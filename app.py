@@ -850,7 +850,7 @@ if run_scan and fasta:
 
         st.session_state["df"] = df
 
-       df["Length"] = df["Peptide"].apply(len)
+        df["Length"] = df["Peptide"].apply(len)
 
         # ==========================
         # SPLIT TABLES
