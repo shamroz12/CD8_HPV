@@ -840,7 +840,7 @@ if run_scan and fasta:
 
         peptides, positions = generate_peptides(seq)
               
-               valid_peptides = []
+        valid_peptides = []
         valid_positions = []
         features = []
 
