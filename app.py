@@ -440,14 +440,6 @@ from reportlab.platypus import PageBreak
 # =========================================================
 # REMOVE STREAMLIT DEFAULT PADDING
 # =========================================================
-st.markdown("""
-<style>
-
-section.main > div {
-    padding-top: 0 !important;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # =========================================================
 # PREMIUM FONT SYSTEM
