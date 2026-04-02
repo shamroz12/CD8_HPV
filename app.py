@@ -438,21 +438,39 @@ h1, h2, h3 {
 # =========================================================
 # HERO BLOCK
 # =========================================================
+
+st.markdown("""
+<style>
+/* REMOVE ALL STREAMLIT PADDING */
+[data-testid="stAppViewContainer"] {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.main .block-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+}
+
+/* REMOVE TOP GAP */
+header {visibility: hidden;}
+section.main {padding-top: 0 !important;}
+</style>
+""", unsafe_allow_html=True)
+
 components.html("""
 <style>
 
+<style>
+
 .hero {
-    position: fixed;   /* 🔥 key change */
-    top: 0;
-    left: 0;
+    position: fixed;
+    inset: 0;                 /* full screen */
     width: 100vw;
     height: 100vh;
 
-    margin: 0;
-    padding: 0;
-
-    z-index: 0;   /* behind content */
-
+    z-index: -1;              /* behind content */
     overflow: hidden;
 
     background:
@@ -461,19 +479,28 @@ components.html("""
         linear-gradient(135deg, #020617 0%, #0f172a 60%, #020617 100%);
 }
 
+/* remove streamlit spacing */
 [data-testid="stAppViewContainer"] {
     padding: 0 !important;
+    margin: 0 !important;
 }
 
 .main .block-container {
     padding: 0 !important;
     margin: 0 !important;
+    max-width: 100% !important;
 }
+
+/* remove header gap */
+header {visibility: hidden;}
+section.main {padding-top: 0 !important;}
 
 canvas {
     position:absolute;
     top:0;
     left:0;
+    width:100%;
+    height:100%;
 }
 
 .hero-content {
