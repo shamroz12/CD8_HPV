@@ -461,70 +461,13 @@ h1, h2, h3 {
 # =========================================================
 # HERO BLOCK
 # =========================================================
+import streamlit.components.v1 as components
 
-st.markdown("""
+components.html("""
+<!DOCTYPE html>
+<html>
+<head>
 <style>
-
-/* FORCE FULL HEIGHT */
-html, body, #root, [data-testid="stAppViewContainer"] {
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* REMOVE STREAMLIT GAP */
-.main .block-container {
-    padding: 0 !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-}
-
-/* CANVAS FULLSCREEN */
-canvas {
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-}
-
-/* HERO CONTENT */
-.hero-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    z-index: 10;
-}
-
-/* TEXT */
-.hero-title {
-    font-size: clamp(64px,8vw,115px);
-    font-weight:700;
-    letter-spacing:4px;
-
-    background: linear-gradient(90deg,#60a5fa,#a78bfa,#22d3ee,#60a5fa);
-    background-size: 300% 300%;
-
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    animation: gradientMove 6s ease infinite;
-}
-
-.hero-sub {
-    font-size:40px;
-    color:#cbd5e1;
-}
-
-/* ANIMATION */
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
 body {
     margin: 0;
     overflow: hidden;
@@ -545,7 +488,6 @@ canvas {
     font-size: 80px;
     font-weight: bold;
     color: #38bdf8;
-    font-family: Arial;
     text-align: center;
 }
 
@@ -553,7 +495,6 @@ canvas {
     font-size: 28px;
     color: #cbd5e1;
 }
-
 </style>
 </head>
 
@@ -577,7 +518,6 @@ function resize(){
 resize();
 window.addEventListener("resize", resize);
 
-// particles
 let particles = [];
 
 for(let i=0;i<80;i++){
@@ -613,7 +553,7 @@ animate();
 
 </body>
 </html>
-""", height=800)
+""", height=700)
 
 st.markdown("<div style='height:100vh'></div>", unsafe_allow_html=True)
 
