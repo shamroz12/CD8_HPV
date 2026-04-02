@@ -1,34 +1,3 @@
-import streamlit as st
-
-st.markdown("""
-<style>
-
-/* REMOVE ALL DEFAULT MARGINS */
-html, body, [class*="css"]  {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* REMOVE STREAMLIT FRAME */
-[data-testid="stAppViewContainer"] {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* REMOVE CONTENT CONTAINER LIMIT */
-.main .block-container {
-    padding: 0 !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-}
-
-/* REMOVE TOP HEADER GAP */
-header {visibility: hidden;}
-section.main {padding-top: 0 !important;}
-
-</style>
-""", unsafe_allow_html=True)
-
 def generate_peptides(seq):
     peptides = []
     positions = []
