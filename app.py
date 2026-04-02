@@ -436,18 +436,13 @@ from reportlab.platypus import Image
 from reportlab.lib.units import inch
 from reportlab.platypus import PageBreak
 
+section.main > div {
+    padding-top: 0 !important;
+}
+
 # =========================================================
 # REMOVE STREAMLIT DEFAULT PADDING
 # =========================================================
-st.markdown("""
-<style>
-
-.block-container { padding-top: 0rem !important; }
-header {visibility: hidden;}
-html { scroll-behavior: smooth; }
-
-</style>
-""", unsafe_allow_html=True)
 
 # =========================================================
 # PREMIUM FONT SYSTEM
@@ -473,47 +468,37 @@ h1, h2, h3 {
 st.markdown("""
 <style>
 
+/* FULLSCREEN HERO */
 .hero {
     position: fixed;
     inset: 0;
-
     width: 100vw;
     height: 100vh;
-
-    margin: 0;
-    padding: 0;
-
     z-index: -1;
     overflow: hidden;
+    pointer-events: none;
 
     background:
         radial-gradient(circle at 30% 40%, #3b0764 0%, transparent 45%),
         radial-gradient(circle at 70% 60%, #1e1b4b 0%, transparent 50%),
         linear-gradient(135deg, #020617 0%, #0f172a 60%, #020617 100%);
-
-    animation: slowZoom 25s ease-in-out infinite alternate;
 }
 
-/* FULL RESET */
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow-x: hidden;
+/* FORCE FULL HEIGHT */
+html, body, #root, [data-testid="stAppViewContainer"] {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* STREAMLIT FIX */
-[data-testid="stAppViewContainer"],
+/* REMOVE STREAMLIT GAP */
 .main .block-container {
     padding: 0 !important;
     margin: 0 !important;
     max-width: 100% !important;
 }
 
-header {visibility: hidden;}
-section.main {padding-top: 0 !important;}
-
-/* CANVAS */
+/* CANVAS FULLSCREEN */
 canvas {
     position:absolute;
     top:0;
@@ -522,7 +507,7 @@ canvas {
     height:100%;
 }
 
-/* CONTENT */
+/* HERO CONTENT */
 .hero-content {
     position: absolute;
     top: 50%;
@@ -534,7 +519,6 @@ canvas {
 
 /* TEXT */
 .hero-title {
-    font-family: 'Orbitron', sans-serif;
     font-size: clamp(64px,8vw,115px);
     font-weight:700;
     letter-spacing:4px;
@@ -545,7 +529,7 @@ canvas {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 
-    animation: gradientMove 6s ease infinite, glowPulse 3s ease-in-out infinite;
+    animation: gradientMove 6s ease infinite;
 }
 
 .hero-sub {
@@ -553,127 +537,59 @@ canvas {
     color:#cbd5e1;
 }
 
-.cta {
-    margin-top: 60px;
-    font-size: 20px;
-    color: #38bdf8;
-}
-
-/* ANIMATIONS */
+/* ANIMATION */
 @keyframes gradientMove {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-@keyframes glowPulse {
-    0% { text-shadow: 0 0 20px rgba(96,165,250,0.2); }
-    50% { text-shadow: 0 0 45px rgba(96,165,250,0.55); }
-    100% { text-shadow: 0 0 20px rgba(96,165,250,0.2); }
-}
-
-@keyframes slowZoom {
-    from { transform: scale(1); }
-    to { transform: scale(1.04); }
-}
-
-.hero::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, rgba(56,189,248,0.05), transparent 70%);
-    pointer-events: none;
-}
-
 </style>
 
 <div class="hero">
-
     <canvas id="immune"></canvas>
     <canvas id="network"></canvas>
 
     <div class="hero-content">
         <div class="hero-title">HPV EPIPRED</div>
         <div class="hero-sub">MHC I Epitope Prediction</div>
-
-        <a href="#scanner" class="cta">
-            <span class="arrow">↓</span> Launch Scanner
-        </a>
     </div>
+</div>
 
 <script>
 
-// ===== CANVAS SETUP =====
+// ===== CANVAS =====
 const immune = document.getElementById("immune");
 const network = document.getElementById("network");
 
 const ictx = immune.getContext("2d");
 const nctx = network.getContext("2d");
 
-// ✅ FULLSCREEN FIX
+// ✅ PERFECT FULLSCREEN FIX (RETINA SAFE)
 function resize(){
-    immune.width = window.innerWidth;
-    immune.height = window.innerHeight;
-    network.width = window.innerWidth;
-    network.height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+
+    immune.width = window.innerWidth * dpr;
+    immune.height = window.innerHeight * dpr;
+
+    network.width = window.innerWidth * dpr;
+    network.height = window.innerHeight * dpr;
+
+    immune.style.width = window.innerWidth + "px";
+    immune.style.height = window.innerHeight + "px";
+
+    network.style.width = window.innerWidth + "px";
+    network.style.height = window.innerHeight + "px";
+
+    ictx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    nctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 resize();
 window.addEventListener("resize", resize);
 
-// =============================
-// YOUR EXISTING CODE (UNCHANGED)
-// =============================
-
-// immune animation
-let cells = [];
-for(let i=0;i<7;i++){
-    cells.push({
-        x:Math.random()*window.innerWidth,
-        y:Math.random()*window.innerHeight,
-        r:90+Math.random()*40,
-        pulse:Math.random()*Math.PI,
-        driftX:(Math.random()-0.5)*0.3,
-        driftY:(Math.random()-0.5)*0.3
-    });
-}
-
-function drawImmune(){
-    ictx.clearRect(0,0,immune.width,immune.height);
-    cells.forEach(c=>{
-        c.pulse+=0.02;
-        c.x+=c.driftX;
-        c.y+=c.driftY;
-
-        let membrane = ictx.createRadialGradient(c.x,c.y,c.r*0.2,c.x,c.y,c.r);
-        membrane.addColorStop(0,"rgba(168,85,247,0.8)");
-        membrane.addColorStop(1,"rgba(168,85,247,0.02)");
-
-        ictx.beginPath();
-        ictx.arc(c.x,c.y,c.r,0,Math.PI*2);
-        ictx.fillStyle=membrane;
-        ictx.fill();
-
-        ictx.beginPath();
-        ictx.arc(c.x,c.y,c.r*0.65,0,Math.PI*2);
-        ictx.fillStyle="rgba(99,102,241,0.4)";
-        ictx.fill();
-
-        ictx.beginPath();
-        ictx.arc(c.x,c.y,c.r*0.3,0,Math.PI*2);
-        ictx.fillStyle="rgba(56,189,248,0.7)";
-        ictx.fill();
-    });
-
-    requestAnimationFrame(drawImmune);
-}
-drawImmune();
-
-// network animation
+// ===== SIMPLE NETWORK (KEEP LIGHT) =====
 let nodes = [];
-let mouseX = 0;
-let mouseY = 0;
-
-for(let i=0;i<70;i++){
+for(let i=0;i<60;i++){
     nodes.push({
         x:Math.random()*window.innerWidth,
         y:Math.random()*window.innerHeight,
@@ -682,13 +598,7 @@ for(let i=0;i<70;i++){
     });
 }
 
-window.addEventListener("mousemove", e=>{
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
-
-function drawNetwork(){
-
+function draw(){
     nctx.clearRect(0,0,network.width,network.height);
 
     nodes.forEach(n=>{
@@ -698,47 +608,20 @@ function drawNetwork(){
         if(n.x<0||n.x>network.width) n.vx*=-1;
         if(n.y<0||n.y>network.height) n.vy*=-1;
 
-        let dx = mouseX - n.x;
-        let dy = mouseY - n.y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-
-        if(dist < 200){
-            n.x += dx * 0.002;
-            n.y += dy * 0.002;
-        }
-
-        let pulse = 2 + Math.sin(Date.now()*0.005 + n.x);
-
         nctx.beginPath();
-        nctx.arc(n.x,n.y,pulse,0,Math.PI*2);
+        nctx.arc(n.x,n.y,2,0,Math.PI*2);
         nctx.fillStyle="rgba(34,211,238,0.9)";
         nctx.fill();
     });
 
-    for(let i=0;i<nodes.length;i++){
-        for(let j=i+1;j<nodes.length;j++){
-
-            let dx = nodes[i].x - nodes[j].x;
-            let dy = nodes[i].y - nodes[j].y;
-            let dist = Math.sqrt(dx*dx + dy*dy);
-
-            if(dist < 140){
-                nctx.beginPath();
-                nctx.moveTo(nodes[i].x,nodes[i].y);
-                nctx.lineTo(nodes[j].x,nodes[j].y);
-                nctx.strokeStyle="rgba(34,211,238,0.15)";
-                nctx.stroke();
-            }
-        }
-    }
-
-    requestAnimationFrame(drawNetwork);
+    requestAnimationFrame(draw);
 }
-
-drawNetwork();
+draw();
 
 </script>
-""", height=1000)
+""", unsafe_allow_html=True)
+
+st.markdown("<div style='height:100vh'></div>", unsafe_allow_html=True)
 
 # =========================================================
 # MODEL
