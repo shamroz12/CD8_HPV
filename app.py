@@ -460,17 +460,43 @@ h1, h2, h3 {
 """, unsafe_allow_html=True)
 
 # =========================================================
+# ANIMATION
+# =========================================================
+st.markdown("""
+<style>
+
+/* Make whole app transparent so animation shows */
+[data-testid="stAppViewContainer"] {
+    background: transparent !important;
+}
+
+section.main {
+    background: transparent !important;
+}
+
+/* Remove width restriction */
+.block-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================================================
 # HERO BLOCK
 # =========================================================
 components.html("""
 <style>
 
 .hero {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100vw;
     height: 100vh;
-    margin-left: calc(-50vw + 50%);
     overflow: hidden;
+}
 
     background:
         radial-gradient(circle at 30% 40%, #3b0764 0%, transparent 45%),
