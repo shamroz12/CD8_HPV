@@ -15,6 +15,37 @@ def generate_peptides(seq):
     return peptides, positions
     
 import streamlit as st
+
+st.markdown("""
+<style>
+
+/* 🔥 REMOVE ALL POSSIBLE STREAMLIT PADDING */
+html, body, #root {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+}
+
+/* FULL WIDTH APP */
+[data-testid="stAppViewContainer"] {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* REMOVE CENTER CONTAINER LIMIT */
+.main .block-container {
+    max-width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* REMOVE HEADER SPACE */
+header {visibility: hidden;}
+section.main {padding-top: 0 !important;}
+
+</style>
+""", unsafe_allow_html=True)
+
 st.set_page_config(page_title="HPV EPIPRED", page_icon="🧬", layout="wide")
 
 st.markdown("""
@@ -464,12 +495,16 @@ components.html("""
 
 .hero {
     position: fixed;
-    inset: 0;                 /* full screen */
+    inset: 0;
     width: 100vw;
     height: 100vh;
 
-    z-index: -1;              /* behind content */
+    margin: 0;
+    padding: 0;
+
+    z-index: -1;
     overflow: hidden;
+}
 
     background:
         radial-gradient(circle at 30% 40%, #3b0764 0%, transparent 45%),
