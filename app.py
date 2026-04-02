@@ -479,6 +479,12 @@ components.html("""
         linear-gradient(135deg, #020617 0%, #0f172a 60%, #020617 100%);
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
 /* remove streamlit spacing */
 [data-testid="stAppViewContainer"] {
     padding: 0 !important;
