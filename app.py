@@ -472,26 +472,6 @@ h1, h2, h3 {
 
 st.markdown("""
 <style>
-/* REMOVE ALL STREAMLIT PADDING */
-[data-testid="stAppViewContainer"] {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-.main .block-container {
-    padding: 0 !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-}
-
-/* REMOVE TOP GAP */
-header {visibility: hidden;}
-section.main {padding-top: 0 !important;}
-</style>
-""", unsafe_allow_html=True)
-
-components.html("""
-<style>
 
 .hero {
     position: fixed;
@@ -505,40 +485,35 @@ components.html("""
 
     z-index: -1;
     overflow: hidden;
-}
 
     background:
         radial-gradient(circle at 30% 40%, #3b0764 0%, transparent 45%),
         radial-gradient(circle at 70% 60%, #1e1b4b 0%, transparent 50%),
         linear-gradient(135deg, #020617 0%, #0f172a 60%, #020617 100%);
+
+    animation: slowZoom 25s ease-in-out infinite alternate;
 }
 
+/* FULL RESET */
 html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
     overflow-x: hidden;
 }
 
-html, body {
-    height: 100%;
-}
-
-/* remove streamlit spacing */
-[data-testid="stAppViewContainer"] {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
+/* STREAMLIT FIX */
+[data-testid="stAppViewContainer"],
 .main .block-container {
     padding: 0 !important;
     margin: 0 !important;
     max-width: 100% !important;
 }
 
-/* remove header gap */
 header {visibility: hidden;}
 section.main {padding-top: 0 !important;}
 
+/* CANVAS */
 canvas {
     position:absolute;
     top:0;
@@ -547,6 +522,7 @@ canvas {
     height:100%;
 }
 
+/* CONTENT */
 .hero-content {
     position: absolute;
     top: 50%;
@@ -556,27 +532,20 @@ canvas {
     z-index: 10;
 }
 
+/* TEXT */
 .hero-title {
     font-family: 'Orbitron', sans-serif;
     font-size: clamp(64px,8vw,115px);
     font-weight:700;
     letter-spacing:4px;
 
-    background: linear-gradient(
-        90deg,
-        #60a5fa,
-        #a78bfa,
-        #22d3ee,
-        #60a5fa
-    );
-
+    background: linear-gradient(90deg,#60a5fa,#a78bfa,#22d3ee,#60a5fa);
     background-size: 300% 300%;
 
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 
-    animation: gradientMove 6s ease infinite,
-               glowPulse 3s ease-in-out infinite;
+    animation: gradientMove 6s ease infinite, glowPulse 3s ease-in-out infinite;
 }
 
 .hero-sub {
@@ -588,30 +557,9 @@ canvas {
     margin-top: 60px;
     font-size: 20px;
     color: #38bdf8;
-    text-decoration: none;
-    display: inline-block;
-    font-weight: 500;
 }
 
-.arrow {
-    display: inline-block;
-    animation: bounce 1.6s infinite;
-}
-
-.hero {
-    animation: slowZoom 25s ease-in-out infinite alternate;
-}
-
-@keyframes slowZoom {
-    from { transform: scale(1); }
-    to { transform: scale(1.04); }
-}
-
-@keyframes bounce {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(8px); }
-}
-
+/* ANIMATIONS */
 @keyframes gradientMove {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -622,6 +570,11 @@ canvas {
     0% { text-shadow: 0 0 20px rgba(96,165,250,0.2); }
     50% { text-shadow: 0 0 45px rgba(96,165,250,0.55); }
     100% { text-shadow: 0 0 20px rgba(96,165,250,0.2); }
+}
+
+@keyframes slowZoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.04); }
 }
 
 .hero::after {
