@@ -462,7 +462,8 @@ h1, h2, h3 {
 # HERO BLOCK
 # =========================================================
 
-
+st.markdown("""
+<style>
 
 /* FORCE FULL HEIGHT */
 html, body, #root, [data-testid="stAppViewContainer"] {
@@ -525,7 +526,6 @@ canvas {
 }
 
 </style>
-
 
 import streamlit.components.v1 as components
 
@@ -624,6 +624,8 @@ animate();
 </body>
 </html>
 """, height=800)
+
+st.markdown("<div style='height:100vh'></div>", unsafe_allow_html=True)
 
 # =========================================================
 # MODEL
