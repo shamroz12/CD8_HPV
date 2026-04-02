@@ -525,16 +525,6 @@ canvas {
     100% { background-position: 0% 50%; }
 }
 
-</style>
-
-import streamlit.components.v1 as components
-
-components.html("""
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-
 body {
     margin: 0;
     overflow: hidden;
