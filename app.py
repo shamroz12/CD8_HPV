@@ -1,3 +1,32 @@
+st.markdown("""
+<style>
+
+/* REMOVE ALL DEFAULT MARGINS */
+html, body, [class*="css"]  {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* REMOVE STREAMLIT FRAME */
+[data-testid="stAppViewContainer"] {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* REMOVE CONTENT CONTAINER LIMIT */
+.main .block-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+}
+
+/* REMOVE TOP HEADER GAP */
+header {visibility: hidden;}
+section.main {padding-top: 0 !important;}
+
+</style>
+""", unsafe_allow_html=True)
+
 def generate_peptides(seq):
     peptides = []
     positions = []
@@ -462,15 +491,13 @@ section.main {padding-top: 0 !important;}
 components.html("""
 <style>
 
-<style>
-
 .hero {
     position: fixed;
-    inset: 0;                 /* full screen */
+    inset: 0;
     width: 100vw;
     height: 100vh;
 
-    z-index: -1;              /* behind content */
+    z-index: -1;
     overflow: hidden;
 
     background:
