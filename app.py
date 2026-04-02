@@ -496,6 +496,7 @@ components.html("""
 .hero {
     position: fixed;
     inset: 0;
+
     width: 100vw;
     height: 100vh;
 
@@ -516,6 +517,10 @@ html, body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+}
+
+html, body {
+    height: 100%;
 }
 
 /* remove streamlit spacing */
