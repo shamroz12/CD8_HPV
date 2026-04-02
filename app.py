@@ -558,6 +558,15 @@ canvas {
     animation: bounce 1.6s infinite;
 }
 
+.hero {
+    animation: slowZoom 25s ease-in-out infinite alternate;
+}
+
+@keyframes slowZoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.04); }
+}
+
 @keyframes bounce {
     0%,100% { transform: translateY(0); }
     50% { transform: translateY(8px); }
