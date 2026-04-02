@@ -413,31 +413,9 @@ from reportlab.platypus import PageBreak
 st.markdown("""
 <style>
 
-/* Remove ALL padding/margins */
-.block-container {
-    padding: 0rem !important;
-    margin: 0rem !important;
-    max-width: 100% !important;
-}
-
-/* Remove main container spacing */
-section.main > div {
-    padding: 0 !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-}
-
-/* Make app take full viewport */
-html, body, [data-testid="stAppViewContainer"], .stApp {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-/* Hide header/footer */
+.block-container { padding-top: 0rem !important; }
 header {visibility: hidden;}
-footer {visibility: hidden;}
+html { scroll-behavior: smooth; }
 
 </style>
 """, unsafe_allow_html=True)
@@ -466,11 +444,11 @@ components.html("""
 <style>
 
 .hero {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 0;   /* 👈 IMPORTANT */
-}
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    margin-left: calc(-50vw + 50%);
+    overflow: hidden;
 
     background:
         radial-gradient(circle at 30% 40%, #3b0764 0%, transparent 45%),
