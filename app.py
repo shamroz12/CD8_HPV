@@ -1,3 +1,5 @@
+import streamlit as st
+
 st.markdown("""
 <style>
 
@@ -602,6 +604,14 @@ canvas {
     0% { text-shadow: 0 0 20px rgba(96,165,250,0.2); }
     50% { text-shadow: 0 0 45px rgba(96,165,250,0.55); }
     100% { text-shadow: 0 0 20px rgba(96,165,250,0.2); }
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(56,189,248,0.05), transparent 70%);
+    pointer-events: none;
 }
 
 </style>
