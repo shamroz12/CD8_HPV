@@ -464,11 +464,11 @@ components.html("""
 
 .hero {
     position: fixed;
-    inset: 0;
+    inset: 0;                 /* full screen */
     width: 100vw;
     height: 100vh;
 
-    z-index: -1;
+    z-index: -1;              /* behind content */
     overflow: hidden;
 
     background:
