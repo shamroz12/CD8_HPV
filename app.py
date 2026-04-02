@@ -469,16 +469,19 @@ st.markdown("""
 .hero {
     position: fixed;
     inset: 0;
+
     width: 100vw;
     height: 100vh;
-    z-index: -1;
-    overflow: hidden;
-    pointer-events: none;
 
-    background:
-        radial-gradient(circle at 30% 40%, #3b0764 0%, transparent 45%),
-        radial-gradient(circle at 70% 60%, #1e1b4b 0%, transparent 50%),
-        linear-gradient(135deg, #020617 0%, #0f172a 60%, #020617 100%);
+    z-index: 0;   /* 🔥 CHANGE THIS (was -1) */
+    overflow: hidden;
+}
+
+/* VERY IMPORTANT: push Streamlit content above */
+[data-testid="stAppViewContainer"] {
+    position: relative;
+    z-index: 10;
+    background: transparent !important;
 }
 
 /* FORCE FULL HEIGHT */
