@@ -461,101 +461,252 @@ h1, h2, h3 {
 # =========================================================
 # HERO BLOCK
 # =========================================================
-import streamlit.components.v1 as components
-
 components.html("""
-<!DOCTYPE html>
-<html>
-<head>
 <style>
-body {
-    margin: 0;
+
+.hero {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    margin-left: calc(-50vw + 50%);
     overflow: hidden;
-    background: #020617;
+
+    background:
+        radial-gradient(circle at 30% 40%, #3b0764 0%, transparent 45%),
+        radial-gradient(circle at 70% 60%, #1e1b4b 0%, transparent 50%),
+        linear-gradient(135deg, #020617 0%, #0f172a 60%, #020617 100%);
 }
 
 canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
+    position:absolute;
+    top:0;
+    left:0;
 }
 
-.title {
-    position: fixed;
+.hero-content {
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 80px;
-    font-weight: bold;
-    color: #38bdf8;
     text-align: center;
+    z-index: 10;
 }
 
-.subtitle {
-    font-size: 28px;
-    color: #cbd5e1;
+.hero-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(64px,8vw,115px);
+    font-weight:700;
+    letter-spacing:4px;
+
+    background: linear-gradient(
+        90deg,
+        #60a5fa,
+        #a78bfa,
+        #22d3ee,
+        #60a5fa
+    );
+
+    background-size: 300% 300%;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: gradientMove 6s ease infinite,
+               glowPulse 3s ease-in-out infinite;
 }
+
+.hero-sub {
+    font-size:40px;
+    color:#cbd5e1;
+}
+
+.cta {
+    margin-top: 60px;
+    font-size: 20px;
+    color: #38bdf8;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.arrow {
+    display: inline-block;
+    animation: bounce 1.6s infinite;
+}
+
+@keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes glowPulse {
+    0% { text-shadow: 0 0 20px rgba(96,165,250,0.2); }
+    50% { text-shadow: 0 0 45px rgba(96,165,250,0.55); }
+    100% { text-shadow: 0 0 20px rgba(96,165,250,0.2); }
+}
+
 </style>
-</head>
 
-<body>
+<div class="hero">
 
-<canvas id="canvas"></canvas>
+    <canvas id="immune"></canvas>
+    <canvas id="network"></canvas>
 
-<div class="title">
-    HPV EPIPRED
-    <div class="subtitle">MHC I Epitope Prediction</div>
+    <div class="hero-content">
+        <div class="hero-title">HPV EPIPRED</div>
+        <div class="hero-sub">MHC I Epitope Prediction</div>
+
+        <a href="#scanner" class="cta">
+            <span class="arrow">↓</span> Launch Scanner
+        </a>
+    </div>
+
 </div>
 
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+// (YOUR JS — unchanged)
+
+const immune = document.getElementById("immune");
+const network = document.getElementById("network");
+
+const ictx = immune.getContext("2d");
+const nctx = network.getContext("2d");
 
 function resize(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    immune.width = window.innerWidth;
+    immune.height = window.innerHeight;
+    network.width = window.innerWidth;
+    network.height = window.innerHeight;
 }
 resize();
 window.addEventListener("resize", resize);
 
-let particles = [];
+// IMMUNE + NETWORK SAME CODE (UNCHANGED)
 
-for(let i=0;i<80;i++){
-    particles.push({
-        x:Math.random()*canvas.width,
-        y:Math.random()*canvas.height,
-        vx:(Math.random()-0.5)*0.5,
-        vy:(Math.random()-0.5)*0.5
+let cells = [];
+for(let i=0;i<7;i++){
+    cells.push({
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+        r:90+Math.random()*40,
+        pulse:Math.random()*Math.PI,
+        driftX:(Math.random()-0.5)*0.3,
+        driftY:(Math.random()-0.5)*0.3
     });
 }
 
-function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+function drawImmune(){
+    ictx.clearRect(0,0,immune.width,immune.height);
+    cells.forEach(c=>{
+        c.pulse+=0.02;
+        c.x+=c.driftX;
+        c.y+=c.driftY;
 
-    particles.forEach(p=>{
-        p.x += p.vx;
-        p.y += p.vy;
+        let membrane = ictx.createRadialGradient(c.x,c.y,c.r*0.2,c.x,c.y,c.r);
+        membrane.addColorStop(0,"rgba(168,85,247,0.8)");
+        membrane.addColorStop(1,"rgba(168,85,247,0.02)");
 
-        if(p.x<0||p.x>canvas.width) p.vx *= -1;
-        if(p.y<0||p.y>canvas.height) p.vy *= -1;
+        ictx.beginPath();
+        ictx.arc(c.x,c.y,c.r,0,Math.PI*2);
+        ictx.fillStyle=membrane;
+        ictx.fill();
 
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,2,0,Math.PI*2);
-        ctx.fillStyle = "#22d3ee";
-        ctx.fill();
+        ictx.beginPath();
+        ictx.arc(c.x,c.y,c.r*0.65,0,Math.PI*2);
+        ictx.fillStyle="rgba(99,102,241,0.4)";
+        ictx.fill();
+
+        ictx.beginPath();
+        ictx.arc(c.x,c.y,c.r*0.3,0,Math.PI*2);
+        ictx.fillStyle="rgba(56,189,248,0.7)";
+        ictx.fill();
     });
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(drawImmune);
+}
+drawImmune();
+
+// =============================
+// AI NEURAL OVERLAY (RESTORED)
+// =============================
+
+let nodes = [];
+let mouseX = 0;
+let mouseY = 0;
+
+for(let i=0;i<70;i++){
+    nodes.push({
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+        vx:(Math.random()-0.5)*0.4,
+        vy:(Math.random()-0.5)*0.4
+    });
 }
 
-animate();
+window.addEventListener("mousemove", e=>{
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+function drawNetwork(){
+
+    nctx.clearRect(0,0,network.width,network.height);
+
+    nodes.forEach(n=>{
+
+        n.x+=n.vx;
+        n.y+=n.vy;
+
+        if(n.x<0||n.x>network.width) n.vx*=-1;
+        if(n.y<0||n.y>network.height) n.vy*=-1;
+
+        // mouse interaction
+        let dx = mouseX - n.x;
+        let dy = mouseY - n.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+
+        if(dist < 200){
+            n.x += dx * 0.002;
+            n.y += dy * 0.002;
+        }
+
+        let pulse = 2 + Math.sin(Date.now()*0.005 + n.x);
+
+        nctx.beginPath();
+        nctx.arc(n.x,n.y,pulse,0,Math.PI*2);
+        nctx.fillStyle="rgba(34,211,238,0.9)";
+        nctx.fill();
+    });
+
+    for(let i=0;i<nodes.length;i++){
+        for(let j=i+1;j<nodes.length;j++){
+
+            let dx = nodes[i].x - nodes[j].x;
+            let dy = nodes[i].y - nodes[j].y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            if(dist < 140){
+                nctx.beginPath();
+                nctx.moveTo(nodes[i].x,nodes[i].y);
+                nctx.lineTo(nodes[j].x,nodes[j].y);
+                nctx.strokeStyle="rgba(34,211,238,0.15)";
+                nctx.stroke();
+            }
+        }
+    }
+
+    requestAnimationFrame(drawNetwork);
+}
+
+drawNetwork();
 </script>
-
-</body>
-</html>
-""", height=700)
-
-st.markdown("<div style='height:100vh'></div>", unsafe_allow_html=True)
+""", height=950)
 
 # =========================================================
 # MODEL
