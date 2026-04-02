@@ -436,13 +436,18 @@ from reportlab.platypus import Image
 from reportlab.lib.units import inch
 from reportlab.platypus import PageBreak
 
-section.main > div {
-    padding-top: 0 !important;
-}
 
 # =========================================================
 # REMOVE STREAMLIT DEFAULT PADDING
 # =========================================================
+st.markdown("""
+<style>
+
+section.main > div {
+    padding-top: 0 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # =========================================================
 # PREMIUM FONT SYSTEM
