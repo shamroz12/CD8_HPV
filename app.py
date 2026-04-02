@@ -442,16 +442,32 @@ components.html("""
 <style>
 
 .hero {
-    position: relative;
+    position: fixed;   /* 🔥 key change */
+    top: 0;
+    left: 0;
     width: 100vw;
     height: 100vh;
-    margin-left: calc(-50vw + 50%);
+
+    margin: 0;
+    padding: 0;
+
+    z-index: 0;   /* behind content */
+
     overflow: hidden;
 
     background:
         radial-gradient(circle at 30% 40%, #3b0764 0%, transparent 45%),
         radial-gradient(circle at 70% 60%, #1e1b4b 0%, transparent 50%),
         linear-gradient(135deg, #020617 0%, #0f172a 60%, #020617 100%);
+}
+
+[data-testid="stAppViewContainer"] {
+    padding: 0 !important;
+}
+
+.main .block-container {
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 canvas {
