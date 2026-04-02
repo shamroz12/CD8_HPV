@@ -593,17 +593,16 @@ canvas {
         </a>
     </div>
 
-</div>
-
 <script>
-// (YOUR JS — unchanged)
 
+// ===== CANVAS SETUP =====
 const immune = document.getElementById("immune");
 const network = document.getElementById("network");
 
 const ictx = immune.getContext("2d");
 const nctx = network.getContext("2d");
 
+// ✅ FULLSCREEN FIX
 function resize(){
     immune.width = window.innerWidth;
     immune.height = window.innerHeight;
@@ -613,8 +612,11 @@ function resize(){
 resize();
 window.addEventListener("resize", resize);
 
-// IMMUNE + NETWORK SAME CODE (UNCHANGED)
+// =============================
+// YOUR EXISTING CODE (UNCHANGED)
+// =============================
 
+// immune animation
 let cells = [];
 for(let i=0;i<7;i++){
     cells.push({
@@ -658,10 +660,7 @@ function drawImmune(){
 }
 drawImmune();
 
-// =============================
-// AI NEURAL OVERLAY (RESTORED)
-// =============================
-
+// network animation
 let nodes = [];
 let mouseX = 0;
 let mouseY = 0;
@@ -685,14 +684,12 @@ function drawNetwork(){
     nctx.clearRect(0,0,network.width,network.height);
 
     nodes.forEach(n=>{
-
         n.x+=n.vx;
         n.y+=n.vy;
 
         if(n.x<0||n.x>network.width) n.vx*=-1;
         if(n.y<0||n.y>network.height) n.vy*=-1;
 
-        // mouse interaction
         let dx = mouseX - n.x;
         let dy = mouseY - n.y;
         let dist = Math.sqrt(dx*dx + dy*dy);
@@ -731,8 +728,9 @@ function drawNetwork(){
 }
 
 drawNetwork();
+
 </script>
-""", height=950)
+""", height=1000)
 
 # =========================================================
 # MODEL
