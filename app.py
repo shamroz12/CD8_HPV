@@ -462,27 +462,7 @@ h1, h2, h3 {
 # HERO BLOCK
 # =========================================================
 
-st.markdown("""
-<style>
 
-/* FULLSCREEN HERO */
-.hero {
-    position: fixed;
-    inset: 0;
-
-    width: 100vw;
-    height: 100vh;
-
-    z-index: 0;   /* 🔥 CHANGE THIS (was -1) */
-    overflow: hidden;
-}
-
-/* VERY IMPORTANT: push Streamlit content above */
-[data-testid="stAppViewContainer"] {
-    position: relative;
-    z-index: 10;
-    background: transparent !important;
-}
 
 /* FORCE FULL HEIGHT */
 html, body, #root, [data-testid="stAppViewContainer"] {
@@ -546,82 +526,104 @@ canvas {
 
 </style>
 
-<div class="hero">
-    <canvas id="immune"></canvas>
-    <canvas id="network"></canvas>
 
-    <div class="hero-content">
-        <div class="hero-title">HPV EPIPRED</div>
-        <div class="hero-sub">MHC I Epitope Prediction</div>
-    </div>
+import streamlit.components.v1 as components
+
+components.html("""
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #020617;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.title {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    font-weight: bold;
+    color: #38bdf8;
+    font-family: Arial;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 28px;
+    color: #cbd5e1;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="title">
+    HPV EPIPRED
+    <div class="subtitle">MHC I Epitope Prediction</div>
 </div>
 
 <script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-// ===== CANVAS =====
-const immune = document.getElementById("immune");
-const network = document.getElementById("network");
-
-const ictx = immune.getContext("2d");
-const nctx = network.getContext("2d");
-
-// ✅ PERFECT FULLSCREEN FIX (RETINA SAFE)
 function resize(){
-    const dpr = window.devicePixelRatio || 1;
-
-    immune.width = window.innerWidth * dpr;
-    immune.height = window.innerHeight * dpr;
-
-    network.width = window.innerWidth * dpr;
-    network.height = window.innerHeight * dpr;
-
-    immune.style.width = window.innerWidth + "px";
-    immune.style.height = window.innerHeight + "px";
-
-    network.style.width = window.innerWidth + "px";
-    network.style.height = window.innerHeight + "px";
-
-    ictx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    nctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 resize();
 window.addEventListener("resize", resize);
 
-// ===== SIMPLE NETWORK (KEEP LIGHT) =====
-let nodes = [];
-for(let i=0;i<60;i++){
-    nodes.push({
-        x:Math.random()*window.innerWidth,
-        y:Math.random()*window.innerHeight,
-        vx:(Math.random()-0.5)*0.4,
-        vy:(Math.random()-0.5)*0.4
+// particles
+let particles = [];
+
+for(let i=0;i<80;i++){
+    particles.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        vx:(Math.random()-0.5)*0.5,
+        vy:(Math.random()-0.5)*0.5
     });
 }
 
-function draw(){
-    nctx.clearRect(0,0,network.width,network.height);
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    nodes.forEach(n=>{
-        n.x+=n.vx;
-        n.y+=n.vy;
+    particles.forEach(p=>{
+        p.x += p.vx;
+        p.y += p.vy;
 
-        if(n.x<0||n.x>network.width) n.vx*=-1;
-        if(n.y<0||n.y>network.height) n.vy*=-1;
+        if(p.x<0||p.x>canvas.width) p.vx *= -1;
+        if(p.y<0||p.y>canvas.height) p.vy *= -1;
 
-        nctx.beginPath();
-        nctx.arc(n.x,n.y,2,0,Math.PI*2);
-        nctx.fillStyle="rgba(34,211,238,0.9)";
-        nctx.fill();
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,2,0,Math.PI*2);
+        ctx.fillStyle = "#22d3ee";
+        ctx.fill();
     });
 
-    requestAnimationFrame(draw);
+    requestAnimationFrame(animate);
 }
-draw();
 
+animate();
 </script>
-""", unsafe_allow_html=True)
 
-st.markdown("<div style='height:100vh'></div>", unsafe_allow_html=True)
+</body>
+</html>
+""", height=800)
 
 # =========================================================
 # MODEL
