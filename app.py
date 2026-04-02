@@ -14,38 +14,6 @@ def generate_peptides(seq):
 
     return peptides, positions
     
-import streamlit as st
-
-st.markdown("""
-<style>
-
-/* 🔥 REMOVE ALL POSSIBLE STREAMLIT PADDING */
-html, body, #root {
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-}
-
-/* FULL WIDTH APP */
-[data-testid="stAppViewContainer"] {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* REMOVE CENTER CONTAINER LIMIT */
-.main .block-container {
-    max-width: 100vw !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* REMOVE HEADER SPACE */
-header {visibility: hidden;}
-section.main {padding-top: 0 !important;}
-
-</style>
-""", unsafe_allow_html=True)
-
 st.set_page_config(page_title="HPV EPIPRED", page_icon="🧬", layout="wide")
 
 st.markdown("""
@@ -443,9 +411,31 @@ from reportlab.platypus import PageBreak
 st.markdown("""
 <style>
 
-.block-container { padding-top: 0rem !important; }
+/* Remove ALL padding/margins */
+.block-container {
+    padding: 0rem !important;
+    margin: 0rem !important;
+    max-width: 100% !important;
+}
+
+/* Remove main container spacing */
+section.main > div {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+}
+
+/* Make app take full viewport */
+html, body, [data-testid="stAppViewContainer"], .stApp {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Hide header/footer */
 header {visibility: hidden;}
-html { scroll-behavior: smooth; }
+footer {visibility: hidden;}
 
 </style>
 """, unsafe_allow_html=True)
